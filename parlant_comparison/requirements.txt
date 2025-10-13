@@ -1,0 +1,22 @@
+# Parlant Framework - Core dependency
+parlant>=0.3.0
+
+# For comparison script and testing
+pytest>=7.4.0
+pytest-asyncio>=0.21.0
+
+# Optional: LLM API clients (choose based on your provider)
+openai>=1.0.0
+anthropic>=0.25.0
+
+# Utilities
+python-dotenv>=1.0.0
+pydantic>=2.0.0
+
+# Data handling and analysis
+pandas>=2.0.0
+numpy>=1.24.0
+
+# For generating reports
+jinja2>=3.1.0
+markdown>=3.4.0

@@ -42,8 +42,9 @@ except ImportError:
 try:
     import parlant.sdk as p
     HAS_PARLANT = True
-except ImportError:
+except (ImportError, TypeError) as e:
     HAS_PARLANT = False
+    print(f"Note: Parlant SDK not available ({type(e).__name__}). Will use simulation for Parlant agents.")
 
 
 class PromptBasedAgent:

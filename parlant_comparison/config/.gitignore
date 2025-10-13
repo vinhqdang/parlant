@@ -1,0 +1,5 @@
+# Ignore the actual config file with API keys
+config.py
+
+# Keep the example file
+!config.py.example

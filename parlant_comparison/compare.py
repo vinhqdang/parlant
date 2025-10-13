@@ -6,6 +6,7 @@ This script runs test scenarios against both approaches and generates comparison
 
 import asyncio
 import json
+import os
 import time
 from datetime import datetime
 from pathlib import Path
@@ -17,61 +18,140 @@ sys.path.append(str(Path(__file__).parent))
 
 from test_scenarios.test_cases import get_test_cases, TestCase
 
+# Try to import config
+try:
+    from config import config
+    HAS_CONFIG = True
+except ImportError:
+    HAS_CONFIG = False
+    config = None
+
+# Try to import LLM libraries
+try:
+    from anthropic import AsyncAnthropic
+    HAS_ANTHROPIC = True
+except ImportError:
+    HAS_ANTHROPIC = False
+
+try:
+    from openai import AsyncOpenAI
+    HAS_OPENAI = True
+except ImportError:
+    HAS_OPENAI = False
+
+try:
+    import parlant.sdk as p
+    HAS_PARLANT = True
+except ImportError:
+    HAS_PARLANT = False
+
 
 class PromptBasedAgent:
-    """Simulates a traditional prompt-based agent."""
+    """Traditional prompt-based agent using LLM API."""
 
-    def __init__(self, prompt_file: Path):
-        """Initialize with a prompt file."""
+    def __init__(self, prompt_file: Path, llm_client=None):
+        """Initialize with a prompt file and LLM client."""
         self.prompt = prompt_file.read_text()
         self.conversation_history: List[Dict[str, str]] = []
+        self.llm_client = llm_client
+        self.use_simulation = llm_client is None
 
     async def send_message(self, message: str) -> str:
-        """
-        Send a message to the agent and get response.
-
-        In production, this would call an LLM API with the full prompt + history.
-        For this demo, we simulate the response.
-        """
+        """Send a message to the agent and get response."""
         self.conversation_history.append({"role": "user", "content": message})
 
-        # Simulate LLM API call
-        # In production: response = await llm_api.chat(system=self.prompt, messages=self.conversation_history)
-
-        # Mock response
-        response = f"[Simulated response using traditional prompt of {len(self.prompt)} characters]"
+        if self.use_simulation:
+            # Fallback to simulation if no LLM client available
+            response = f"[Simulated response using traditional prompt of {len(self.prompt)} characters]"
+        else:
+            # Make actual LLM API call
+            if HAS_ANTHROPIC and isinstance(self.llm_client, AsyncAnthropic):
+                # Use Anthropic API
+                api_response = await self.llm_client.messages.create(
+                    model="claude-3-5-sonnet-20241022",
+                    max_tokens=2000,
+                    system=self.prompt,
+                    messages=self.conversation_history
+                )
+                response = api_response.content[0].text
+            elif HAS_OPENAI and isinstance(self.llm_client, AsyncOpenAI):
+                # Use OpenAI API
+                messages = [{"role": "system", "content": self.prompt}] + self.conversation_history
+                api_response = await self.llm_client.chat.completions.create(
+                    model="gpt-4-turbo-preview",
+                    messages=messages,
+                    max_tokens=2000
+                )
+                response = api_response.choices[0].message.content
+            else:
+                response = f"[No compatible LLM client configured]"
 
         self.conversation_history.append({"role": "assistant", "content": response})
-
         return response
 
 
 class ParlantAgent:
-    """Simulates a Parlant-based agent."""
+    """Parlant-based agent using Parlant SDK."""
 
-    def __init__(self, agent_name: str):
+    def __init__(self, agent_name: str, server=None, agent_id=None):
         """Initialize Parlant agent."""
         self.agent_name = agent_name
-        self.conversation_history: List[Dict[str, str]] = []
+        self.server = server
+        self.agent_id = agent_id
+        self.session_id = None
+        self.customer_id = None
+        self.use_simulation = server is None or agent_id is None
+
+    async def initialize_session(self):
+        """Create a session for this interaction."""
+        if not self.use_simulation and self.server:
+            # Create or get customer
+            customers = await self.server.customers.list()
+            if customers:
+                self.customer_id = customers[0].id
+            else:
+                customer = await self.server.customers.create(name="Test Customer")
+                self.customer_id = customer.id
+
+            # Create session
+            session = await self.server.sessions.create(
+                agent_id=self.agent_id,
+                customer_id=self.customer_id
+            )
+            self.session_id = session.id
 
     async def send_message(self, message: str) -> str:
-        """
-        Send a message through Parlant framework.
+        """Send a message through Parlant framework."""
+        if self.use_simulation:
+            # Fallback to simulation
+            return f"[Simulated Parlant response with guideline-based behavior control]"
 
-        In production, this would interact with Parlant SDK and server.
-        """
-        self.conversation_history.append({"role": "user", "content": message})
+        if not self.session_id:
+            await self.initialize_session()
 
-        # Simulate Parlant processing:
-        # 1. Match relevant guidelines
-        # 2. Call associated tools if needed
-        # 3. Generate contextually guided response
+        # Send message through Parlant
+        await self.server.sessions.create_event(
+            session_id=self.session_id,
+            kind="message",
+            source="customer",
+            message=message
+        )
 
-        response = f"[Simulated Parlant response with guideline-based behavior control]"
+        # Wait for agent response
+        await asyncio.sleep(2)  # Give agent time to process
 
-        self.conversation_history.append({"role": "assistant", "content": response})
+        # Fetch latest events
+        events = await self.server.sessions.list_events(
+            session_id=self.session_id,
+            wait_for_data=10
+        )
 
-        return response
+        # Find the latest AI agent message
+        for event in reversed(events):
+            if event.kind == "message" and event.source == "ai_agent":
+                return event.data.get("message", "[No response]")
+
+        return "[No response from agent]"
 
 
 class ComparisonRunner:
@@ -82,6 +162,63 @@ class ComparisonRunner:
         self.output_dir = output_dir
         self.output_dir.mkdir(exist_ok=True, parents=True)
         self.results: List[Dict[str, Any]] = []
+        self.llm_client = None
+        self.parlant_server = None
+        self.parlant_agents = {}
+
+    async def initialize_llm_client(self):
+        """Initialize LLM client based on available API keys."""
+        # Try config file first
+        if HAS_CONFIG and config:
+            if config.ANTHROPIC_API_KEY and HAS_ANTHROPIC:
+                print("✓ Using Anthropic Claude API (from config)")
+                self.llm_client = AsyncAnthropic(api_key=config.ANTHROPIC_API_KEY)
+                return
+
+            if config.OPENAI_API_KEY and HAS_OPENAI:
+                print("✓ Using OpenAI GPT API (from config)")
+                self.llm_client = AsyncOpenAI(api_key=config.OPENAI_API_KEY)
+                return
+
+        # Fall back to environment variables
+        anthropic_key = os.getenv("ANTHROPIC_API_KEY")
+        if anthropic_key and HAS_ANTHROPIC:
+            print("✓ Using Anthropic Claude API (from env)")
+            self.llm_client = AsyncAnthropic(api_key=anthropic_key)
+            return
+
+        openai_key = os.getenv("OPENAI_API_KEY")
+        if openai_key and HAS_OPENAI:
+            print("✓ Using OpenAI GPT API (from env)")
+            self.llm_client = AsyncOpenAI(api_key=openai_key)
+            return
+
+        print("⚠ No LLM API keys found. Using simulation mode.")
+        print("  Add API keys to config/config.py or set environment variables.")
+
+    async def initialize_parlant_server(self):
+        """Initialize Parlant server and create agents."""
+        if not HAS_PARLANT:
+            print("⚠ Parlant SDK not installed. Using simulation for Parlant agents.")
+            return
+
+        try:
+            # Create Parlant server
+            self.parlant_server = await p.Server().__aenter__()
+
+            # Import and create the customer service agent as an example
+            sys.path.insert(0, str(Path(__file__).parent / "parlant_agents"))
+            from customer_service_agent import create_customer_service_agent
+
+            # Create agents (for now just customer service)
+            cs_agent = await create_customer_service_agent(self.parlant_server)
+            self.parlant_agents["customer_service"] = cs_agent.id
+
+            print(f"✓ Parlant server initialized with {len(self.parlant_agents)} agent(s)")
+
+        except Exception as e:
+            print(f"⚠ Error initializing Parlant server: {e}")
+            print("  Using simulation mode for Parlant agents.")
 
     async def run_test_case(
         self,
@@ -161,8 +298,16 @@ class ComparisonRunner:
             print(f"Warning: Prompt file not found: {prompt_file}")
             return
 
-        traditional_agent = PromptBasedAgent(prompt_file)
-        parlant_agent = ParlantAgent(agent_type)
+        # Create traditional agent with LLM client
+        traditional_agent = PromptBasedAgent(prompt_file, self.llm_client)
+
+        # Create Parlant agent
+        agent_id = self.parlant_agents.get(agent_type)
+        parlant_agent = ParlantAgent(
+            agent_type,
+            server=self.parlant_server,
+            agent_id=agent_id
+        )
 
         # Get test cases
         test_cases = get_test_cases(agent_type)
@@ -187,6 +332,12 @@ class ComparisonRunner:
 
     async def run_all_comparisons(self) -> None:
         """Run comparisons for all agent types."""
+
+        # Initialize LLM client and Parlant server
+        await self.initialize_llm_client()
+        await self.initialize_parlant_server()
+
+        print()  # Blank line after initialization
 
         agent_types = [
             "customer_service",
@@ -325,6 +476,9 @@ async def main() -> None:
     print("\nThis comparison framework demonstrates:")
     print("1. Traditional approach: Single long prompt (10k-30k chars)")
     print("2. Parlant approach: Modular guidelines, tools, and journeys")
+    print("\nNote: To use real LLM APIs instead of simulation:")
+    print("  - Set ANTHROPIC_API_KEY environment variable for Claude")
+    print("  - Or set OPENAI_API_KEY environment variable for GPT")
     print("\nRunning test scenarios...")
 
     await runner.run_all_comparisons()

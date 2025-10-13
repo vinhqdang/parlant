@@ -90,16 +90,24 @@ conda activate py310
 pip install -r requirements.txt
 ```
 
-3. **Configure environment variables (if using real LLM APIs):**
+3. **Configure environment variables (for real LLM API calls):**
+
+The comparison script can use real LLM APIs instead of simulation:
 
 ```bash
-# Create .env file
+# Option 1: Use Anthropic Claude (recommended)
+export ANTHROPIC_API_KEY=your_anthropic_key_here
+
+# Option 2: Use OpenAI GPT
+export OPENAI_API_KEY=your_openai_key_here
+
+# Or create a .env file
 cat > .env << EOF
-OPENAI_API_KEY=your_openai_key_here
-# Or
-ANTHROPIC_API_KEY=your_anthropic_key_here
+ANTHROPIC_API_KEY=your_key_here
 EOF
 ```
+
+**Note:** If no API keys are set, the script runs in simulation mode (for demonstration purposes).
 
 ## Running the Comparison
 

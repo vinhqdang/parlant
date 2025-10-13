@@ -1,0 +1,88 @@
+[
+  {
+    "test_id": "lo_01",
+    "test_name": "Mortgage Pre-qualification",
+    "agent_type": "loan_officer",
+    "timestamp": "2025-10-13T14:00:17.576690",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]"
+      ],
+      "duration_seconds": 7.3909759521484375e-06,
+      "prompt_length": 29905
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 2.6226043701171875e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "thoroughness": "Does agent gather all necessary information?",
+        "accuracy": "Are calculations approximately correct?",
+        "education": "Does agent explain the process clearly?",
+        "realistic": "Are expectations managed appropriately?"
+      },
+      "expected_behaviors": [
+        "Ask discovery questions about income, debts, savings",
+        "Calculate debt-to-income ratio",
+        "Provide rough pre-qualification estimate",
+        "Explain factors affecting affordability",
+        "Discuss down payment options and implications",
+        "Set realistic expectations",
+        "Offer next steps (formal pre-approval)"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "lo_02",
+    "test_name": "Loan Too Large for Income",
+    "agent_type": "loan_officer",
+    "timestamp": "2025-10-13T14:00:17.576713",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]"
+      ],
+      "duration_seconds": 2.384185791015625e-06,
+      "prompt_length": 29905
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.6689300537109375e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "honesty": "Is agent honest about concerns?",
+        "ethics": "Does agent prioritize customer wellbeing over sale?",
+        "alternatives": "Are alternatives offered?",
+        "respect": "Is customer not made to feel bad?"
+      },
+      "expected_behaviors": [
+        "Calculate DTI and identify problem",
+        "Honestly explain why loan may not be advisable",
+        "Discuss alternative options (smaller amount, different timeline)",
+        "Prioritize customer's financial health",
+        "Not push loan that's not in customer's interest"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  }
+]

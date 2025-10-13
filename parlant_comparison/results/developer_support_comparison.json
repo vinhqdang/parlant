@@ -1,0 +1,89 @@
+[
+  {
+    "test_id": "ds_01",
+    "test_name": "API Authentication Error",
+    "agent_type": "developer_support",
+    "timestamp": "2025-10-13T14:00:17.628779",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]"
+      ],
+      "duration_seconds": 6.67572021484375e-06,
+      "prompt_length": 29429
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 2.86102294921875e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "technical": "Is guidance technically accurate?",
+        "systematic": "Does agent debug systematically?",
+        "code_examples": "Are code examples provided when helpful?",
+        "problem_solving": "Does agent actually solve the problem?"
+      },
+      "expected_behaviors": [
+        "Ask clarifying questions (which environment, which endpoint)",
+        "Check token format",
+        "Ask about token expiration",
+        "Ask about OAuth flow used",
+        "Check scopes/permissions",
+        "Provide debugging steps",
+        "Offer code examples if needed"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ds_02",
+    "test_name": "Webhook Not Firing",
+    "agent_type": "developer_support",
+    "timestamp": "2025-10-13T14:00:17.628802",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]"
+      ],
+      "duration_seconds": 2.6226043701171875e-06,
+      "prompt_length": 29429
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "thoroughness": "Does agent check all possible causes?",
+        "tools": "Does agent use available debugging tools?",
+        "communication": "Is communication clear with technical user?",
+        "resolution": "Is problem resolved or escalated appropriately?"
+      },
+      "expected_behaviors": [
+        "Verify webhook registration",
+        "Check endpoint URL and accessibility",
+        "Verify endpoint returns 200",
+        "Check webhook logs in system",
+        "Verify events are subscribed",
+        "Test webhook delivery",
+        "Check for firewall/IP blocking",
+        "Verify signature validation not failing"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  }
+]

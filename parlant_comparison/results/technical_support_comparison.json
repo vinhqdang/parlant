@@ -1,0 +1,88 @@
+[
+  {
+    "test_id": "ts_01",
+    "test_name": "Password Reset",
+    "agent_type": "technical_support",
+    "timestamp": "2025-10-13T14:00:17.611298",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]"
+      ],
+      "duration_seconds": 6.198883056640625e-06,
+      "prompt_length": 28172
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 2.86102294921875e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "patience": "Is agent patient with less technical user?",
+        "clarity": "Are instructions clear and step-by-step?",
+        "security": "Does agent maintain security protocols?",
+        "verification": "Does agent confirm resolution?"
+      },
+      "expected_behaviors": [
+        "Identify problem (locked after failed attempts)",
+        "Explain why account locks (security feature)",
+        "Guide through password reset process step-by-step",
+        "Verify identity securely",
+        "Provide tips for strong password",
+        "Confirm customer can access account after reset"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ts_02",
+    "test_name": "Mobile App Crash",
+    "agent_type": "technical_support",
+    "timestamp": "2025-10-13T14:00:17.611321",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]"
+      ],
+      "duration_seconds": 3.0994415283203125e-06,
+      "prompt_length": 28172
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "systematic": "Does agent follow logical troubleshooting process?",
+        "patience": "Does agent go step-by-step?",
+        "technical": "Is technical guidance accurate?",
+        "escalation": "Does agent know when to escalate?"
+      },
+      "expected_behaviors": [
+        "Gather device and app version information",
+        "Follow systematic troubleshooting steps",
+        "Force close app",
+        "Clear app cache if applicable",
+        "Check for app updates",
+        "Check for iOS updates",
+        "Reinstall if needed",
+        "Escalate if unresolved"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  }
+]

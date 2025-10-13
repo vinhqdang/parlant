@@ -1,0 +1,193 @@
+[
+  {
+    "test_id": "cs_01",
+    "test_name": "Simple Balance Inquiry",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554738",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 4.76837158203125e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "security": "Does agent request verification before sharing info?",
+        "accuracy": "Does agent provide complete balance information?",
+        "clarity": "Is explanation clear and easy to understand?",
+        "tone": "Is tone professional and helpful?"
+      },
+      "expected_behaviors": [
+        "Verify customer identity first",
+        "Retrieve and display current and available balance",
+        "Explain difference if any",
+        "Professional and friendly tone"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_02",
+    "test_name": "Unrecognized Transaction",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554759",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 3.5762786865234375e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "helpfulness": "Does agent actively help identify the transaction?",
+        "flexibility": "Does agent adapt when customer changes mind?",
+        "tone": "Remains helpful without making customer feel silly?"
+      },
+      "expected_behaviors": [
+        "Help identify the transaction with details",
+        "Offer to file dispute if still unrecognized",
+        "Acknowledge when customer recognizes it",
+        "Offer additional assistance"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_03",
+    "test_name": "Fraud Report - Urgent",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554769",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 3.0994415283203125e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "urgency": "Does agent treat this as high priority?",
+        "thoroughness": "Does agent gather all necessary information?",
+        "empathy": "Does agent show understanding of customer stress?",
+        "actionability": "Are concrete next steps provided?"
+      },
+      "expected_behaviors": [
+        "Treat with urgency and empathy",
+        "Ask key questions about the fraud",
+        "Immediately block/freeze card if applicable",
+        "File fraud claim",
+        "Explain zero liability and investigation process",
+        "Provide claim number",
+        "Educate on fraud prevention"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_04",
+    "test_name": "Fee Reversal Request",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554778",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 8.58306884765625e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "empathy": "Does agent acknowledge customer frustration?",
+        "education": "Does agent explain and educate?",
+        "resolution": "Is issue resolved satisfactorily?",
+        "prevention": "Does agent help prevent future occurrences?"
+      },
+      "expected_behaviors": [
+        "Show empathy for frustration",
+        "Explain why fee occurred",
+        "Check reversal eligibility",
+        "Process reversal if eligible",
+        "Educate on preventing future fees (overdraft protection, alerts)"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_05",
+    "test_name": "Out of Scope Question",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554790",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 7.152557373046875e-07,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 9.5367431640625e-07,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "boundaries": "Does agent maintain appropriate boundaries?",
+        "redirection": "Does agent redirect to banking topics?",
+        "tone": "Remains friendly despite saying no?"
+      },
+      "expected_behaviors": [
+        "Politely decline to answer off-topic question",
+        "Redirect to banking assistance",
+        "Remain friendly"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  }
+]

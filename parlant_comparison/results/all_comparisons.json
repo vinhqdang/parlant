@@ -1,0 +1,536 @@
+[
+  {
+    "test_id": "cs_01",
+    "test_name": "Simple Balance Inquiry",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554738",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 4.76837158203125e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "security": "Does agent request verification before sharing info?",
+        "accuracy": "Does agent provide complete balance information?",
+        "clarity": "Is explanation clear and easy to understand?",
+        "tone": "Is tone professional and helpful?"
+      },
+      "expected_behaviors": [
+        "Verify customer identity first",
+        "Retrieve and display current and available balance",
+        "Explain difference if any",
+        "Professional and friendly tone"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_02",
+    "test_name": "Unrecognized Transaction",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554759",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 3.5762786865234375e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "helpfulness": "Does agent actively help identify the transaction?",
+        "flexibility": "Does agent adapt when customer changes mind?",
+        "tone": "Remains helpful without making customer feel silly?"
+      },
+      "expected_behaviors": [
+        "Help identify the transaction with details",
+        "Offer to file dispute if still unrecognized",
+        "Acknowledge when customer recognizes it",
+        "Offer additional assistance"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_03",
+    "test_name": "Fraud Report - Urgent",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554769",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 3.0994415283203125e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "urgency": "Does agent treat this as high priority?",
+        "thoroughness": "Does agent gather all necessary information?",
+        "empathy": "Does agent show understanding of customer stress?",
+        "actionability": "Are concrete next steps provided?"
+      },
+      "expected_behaviors": [
+        "Treat with urgency and empathy",
+        "Ask key questions about the fraud",
+        "Immediately block/freeze card if applicable",
+        "File fraud claim",
+        "Explain zero liability and investigation process",
+        "Provide claim number",
+        "Educate on fraud prevention"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_04",
+    "test_name": "Fee Reversal Request",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554778",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]",
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 8.58306884765625e-06,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "empathy": "Does agent acknowledge customer frustration?",
+        "education": "Does agent explain and educate?",
+        "resolution": "Is issue resolved satisfactorily?",
+        "prevention": "Does agent help prevent future occurrences?"
+      },
+      "expected_behaviors": [
+        "Show empathy for frustration",
+        "Explain why fee occurred",
+        "Check reversal eligibility",
+        "Process reversal if eligible",
+        "Educate on preventing future fees (overdraft protection, alerts)"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "cs_05",
+    "test_name": "Out of Scope Question",
+    "agent_type": "customer_service",
+    "timestamp": "2025-10-13T14:00:17.554790",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 17523 characters]"
+      ],
+      "duration_seconds": 7.152557373046875e-07,
+      "prompt_length": 17523
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 9.5367431640625e-07,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "boundaries": "Does agent maintain appropriate boundaries?",
+        "redirection": "Does agent redirect to banking topics?",
+        "tone": "Remains friendly despite saying no?"
+      },
+      "expected_behaviors": [
+        "Politely decline to answer off-topic question",
+        "Redirect to banking assistance",
+        "Remain friendly"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "lo_01",
+    "test_name": "Mortgage Pre-qualification",
+    "agent_type": "loan_officer",
+    "timestamp": "2025-10-13T14:00:17.576690",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]"
+      ],
+      "duration_seconds": 7.3909759521484375e-06,
+      "prompt_length": 29905
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 2.6226043701171875e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "thoroughness": "Does agent gather all necessary information?",
+        "accuracy": "Are calculations approximately correct?",
+        "education": "Does agent explain the process clearly?",
+        "realistic": "Are expectations managed appropriately?"
+      },
+      "expected_behaviors": [
+        "Ask discovery questions about income, debts, savings",
+        "Calculate debt-to-income ratio",
+        "Provide rough pre-qualification estimate",
+        "Explain factors affecting affordability",
+        "Discuss down payment options and implications",
+        "Set realistic expectations",
+        "Offer next steps (formal pre-approval)"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "lo_02",
+    "test_name": "Loan Too Large for Income",
+    "agent_type": "loan_officer",
+    "timestamp": "2025-10-13T14:00:17.576713",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]",
+        "[Simulated response using traditional prompt of 29905 characters]"
+      ],
+      "duration_seconds": 2.384185791015625e-06,
+      "prompt_length": 29905
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.6689300537109375e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "honesty": "Is agent honest about concerns?",
+        "ethics": "Does agent prioritize customer wellbeing over sale?",
+        "alternatives": "Are alternatives offered?",
+        "respect": "Is customer not made to feel bad?"
+      },
+      "expected_behaviors": [
+        "Calculate DTI and identify problem",
+        "Honestly explain why loan may not be advisable",
+        "Discuss alternative options (smaller amount, different timeline)",
+        "Prioritize customer's financial health",
+        "Not push loan that's not in customer's interest"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ia_01",
+    "test_name": "Retirement Planning Basics",
+    "agent_type": "investment_advisor",
+    "timestamp": "2025-10-13T14:00:17.595525",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28459 characters]",
+        "[Simulated response using traditional prompt of 28459 characters]",
+        "[Simulated response using traditional prompt of 28459 characters]"
+      ],
+      "duration_seconds": 5.7220458984375e-06,
+      "prompt_length": 28459
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 3.0040740966796875e-05,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "education": "Does agent educate effectively?",
+        "appropriateness": "Is advice appropriate for customer's situation?",
+        "reassurance": "Does agent address nervousness?",
+        "actionability": "Are concrete next steps provided?"
+      },
+      "expected_behaviors": [
+        "Ask about goals, time horizon, risk tolerance",
+        "Educate on basic investment principles",
+        "Recommend appropriate asset allocation for age/risk",
+        "Explain tax-advantaged accounts (401k, IRA, Roth IRA)",
+        "Emphasize long-term perspective",
+        "Address concerns about volatility",
+        "Explain diversification"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ia_02",
+    "test_name": "Market Panic Response",
+    "agent_type": "investment_advisor",
+    "timestamp": "2025-10-13T14:00:17.595574",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28459 characters]",
+        "[Simulated response using traditional prompt of 28459 characters]"
+      ],
+      "duration_seconds": 2.384185791015625e-06,
+      "prompt_length": 28459
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.1920928955078125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "calming": "Does agent provide calming influence?",
+        "education": "Does agent educate on market behavior?",
+        "behavioral_coaching": "Does agent prevent emotional mistake?",
+        "empathy": "Does agent acknowledge customer's feelings?"
+      },
+      "expected_behaviors": [
+        "Provide calm, rational perspective",
+        "Explain that market declines are normal and temporary",
+        "Warn against market timing and panic selling",
+        "Remind of long-term strategy and goals",
+        "Explain consequences of missing recovery",
+        "Reframe as opportunity (buying at lower prices)",
+        "Suggest not checking portfolio daily"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ts_01",
+    "test_name": "Password Reset",
+    "agent_type": "technical_support",
+    "timestamp": "2025-10-13T14:00:17.611298",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]"
+      ],
+      "duration_seconds": 6.198883056640625e-06,
+      "prompt_length": 28172
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 2.86102294921875e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "patience": "Is agent patient with less technical user?",
+        "clarity": "Are instructions clear and step-by-step?",
+        "security": "Does agent maintain security protocols?",
+        "verification": "Does agent confirm resolution?"
+      },
+      "expected_behaviors": [
+        "Identify problem (locked after failed attempts)",
+        "Explain why account locks (security feature)",
+        "Guide through password reset process step-by-step",
+        "Verify identity securely",
+        "Provide tips for strong password",
+        "Confirm customer can access account after reset"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ts_02",
+    "test_name": "Mobile App Crash",
+    "agent_type": "technical_support",
+    "timestamp": "2025-10-13T14:00:17.611321",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]",
+        "[Simulated response using traditional prompt of 28172 characters]"
+      ],
+      "duration_seconds": 3.0994415283203125e-06,
+      "prompt_length": 28172
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "systematic": "Does agent follow logical troubleshooting process?",
+        "patience": "Does agent go step-by-step?",
+        "technical": "Is technical guidance accurate?",
+        "escalation": "Does agent know when to escalate?"
+      },
+      "expected_behaviors": [
+        "Gather device and app version information",
+        "Follow systematic troubleshooting steps",
+        "Force close app",
+        "Clear app cache if applicable",
+        "Check for app updates",
+        "Check for iOS updates",
+        "Reinstall if needed",
+        "Escalate if unresolved"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ds_01",
+    "test_name": "API Authentication Error",
+    "agent_type": "developer_support",
+    "timestamp": "2025-10-13T14:00:17.628779",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]"
+      ],
+      "duration_seconds": 6.67572021484375e-06,
+      "prompt_length": 29429
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 2.86102294921875e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "technical": "Is guidance technically accurate?",
+        "systematic": "Does agent debug systematically?",
+        "code_examples": "Are code examples provided when helpful?",
+        "problem_solving": "Does agent actually solve the problem?"
+      },
+      "expected_behaviors": [
+        "Ask clarifying questions (which environment, which endpoint)",
+        "Check token format",
+        "Ask about token expiration",
+        "Ask about OAuth flow used",
+        "Check scopes/permissions",
+        "Provide debugging steps",
+        "Offer code examples if needed"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ds_02",
+    "test_name": "Webhook Not Firing",
+    "agent_type": "developer_support",
+    "timestamp": "2025-10-13T14:00:17.628802",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]",
+        "[Simulated response using traditional prompt of 29429 characters]"
+      ],
+      "duration_seconds": 2.6226043701171875e-06,
+      "prompt_length": 29429
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.9073486328125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "thoroughness": "Does agent check all possible causes?",
+        "tools": "Does agent use available debugging tools?",
+        "communication": "Is communication clear with technical user?",
+        "resolution": "Is problem resolved or escalated appropriately?"
+      },
+      "expected_behaviors": [
+        "Verify webhook registration",
+        "Check endpoint URL and accessibility",
+        "Verify endpoint returns 200",
+        "Check webhook logs in system",
+        "Verify events are subscribed",
+        "Test webhook delivery",
+        "Check for firewall/IP blocking",
+        "Verify signature validation not failing"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  }
+]

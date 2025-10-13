@@ -1,0 +1,86 @@
+[
+  {
+    "test_id": "ia_01",
+    "test_name": "Retirement Planning Basics",
+    "agent_type": "investment_advisor",
+    "timestamp": "2025-10-13T14:00:17.595525",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28459 characters]",
+        "[Simulated response using traditional prompt of 28459 characters]",
+        "[Simulated response using traditional prompt of 28459 characters]"
+      ],
+      "duration_seconds": 5.7220458984375e-06,
+      "prompt_length": 28459
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 3.0040740966796875e-05,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "education": "Does agent educate effectively?",
+        "appropriateness": "Is advice appropriate for customer's situation?",
+        "reassurance": "Does agent address nervousness?",
+        "actionability": "Are concrete next steps provided?"
+      },
+      "expected_behaviors": [
+        "Ask about goals, time horizon, risk tolerance",
+        "Educate on basic investment principles",
+        "Recommend appropriate asset allocation for age/risk",
+        "Explain tax-advantaged accounts (401k, IRA, Roth IRA)",
+        "Emphasize long-term perspective",
+        "Address concerns about volatility",
+        "Explain diversification"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  },
+  {
+    "test_id": "ia_02",
+    "test_name": "Market Panic Response",
+    "agent_type": "investment_advisor",
+    "timestamp": "2025-10-13T14:00:17.595574",
+    "traditional": {
+      "responses": [
+        "[Simulated response using traditional prompt of 28459 characters]",
+        "[Simulated response using traditional prompt of 28459 characters]"
+      ],
+      "duration_seconds": 2.384185791015625e-06,
+      "prompt_length": 28459
+    },
+    "parlant": {
+      "responses": [
+        "[Simulated Parlant response with guideline-based behavior control]",
+        "[Simulated Parlant response with guideline-based behavior control]"
+      ],
+      "duration_seconds": 1.1920928955078125e-06,
+      "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
+      "tools_called": "[Simulated: Would show which tools were executed]"
+    },
+    "evaluation": {
+      "criteria": {
+        "calming": "Does agent provide calming influence?",
+        "education": "Does agent educate on market behavior?",
+        "behavioral_coaching": "Does agent prevent emotional mistake?",
+        "empathy": "Does agent acknowledge customer's feelings?"
+      },
+      "expected_behaviors": [
+        "Provide calm, rational perspective",
+        "Explain that market declines are normal and temporary",
+        "Warn against market timing and panic selling",
+        "Remind of long-term strategy and goals",
+        "Explain consequences of missing recovery",
+        "Reframe as opportunity (buying at lower prices)",
+        "Suggest not checking portfolio daily"
+      ],
+      "notes": "Manual evaluation required for production comparison"
+    }
+  }
+]

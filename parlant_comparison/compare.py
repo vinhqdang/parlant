@@ -107,15 +107,15 @@ class ParlantAgent:
         """Create a session for this interaction."""
         if not self.use_simulation and self.server:
             # Create or get customer
-            customers = await self.server.customers.list()
+            customers = await self.server.list_customers()
             if customers:
                 self.customer_id = customers[0].id
             else:
-                customer = await self.server.customers.create(name="Test Customer")
+                customer = await self.server.create_customer(name="Test Customer")
                 self.customer_id = customer.id
 
             # Create session
-            session = await self.server.sessions.create(
+            session = await self.server.create_session(
                 agent_id=self.agent_id,
                 customer_id=self.customer_id
             )
@@ -131,7 +131,7 @@ class ParlantAgent:
             await self.initialize_session()
 
         # Send message through Parlant
-        await self.server.sessions.create_event(
+        await self.server.create_event(
             session_id=self.session_id,
             kind="message",
             source="customer",
@@ -142,7 +142,7 @@ class ParlantAgent:
         await asyncio.sleep(2)  # Give agent time to process
 
         # Fetch latest events
-        events = await self.server.sessions.list_events(
+        events = await self.server.list_events(
             session_id=self.session_id,
             wait_for_data=10
         )
@@ -207,13 +207,30 @@ class ComparisonRunner:
             # Create Parlant server
             self.parlant_server = await p.Server().__aenter__()
 
-            # Import and create the customer service agent as an example
+            # Import all agent creation functions
             sys.path.insert(0, str(Path(__file__).parent / "parlant_agents"))
             from customer_service_agent import create_customer_service_agent
+            from loan_officer_agent import create_loan_officer_agent
+            from investment_advisor_agent import create_investment_advisor_agent
+            from technical_support_agent import create_technical_support_agent
+            from developer_support_agent import create_developer_support_agent
 
-            # Create agents (for now just customer service)
+            # Create all agents
+            print("Creating Parlant agents...")
             cs_agent = await create_customer_service_agent(self.parlant_server)
             self.parlant_agents["customer_service"] = cs_agent.id
+
+            lo_agent = await create_loan_officer_agent(self.parlant_server)
+            self.parlant_agents["loan_officer"] = lo_agent.id
+
+            ia_agent = await create_investment_advisor_agent(self.parlant_server)
+            self.parlant_agents["investment_advisor"] = ia_agent.id
+
+            ts_agent = await create_technical_support_agent(self.parlant_server)
+            self.parlant_agents["technical_support"] = ts_agent.id
+
+            ds_agent = await create_developer_support_agent(self.parlant_server)
+            self.parlant_agents["developer_support"] = ds_agent.id
 
             print(f"✓ Parlant server initialized with {len(self.parlant_agents)} agent(s)")
 

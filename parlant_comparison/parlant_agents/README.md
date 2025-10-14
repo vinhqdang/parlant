@@ -31,21 +31,37 @@ This directory contains Parlant-based implementations of the 5 banking scenarios
 
 ## Agent Implementations
 
+All 5 agents are **fully implemented** with complete tools, guidelines, and journeys:
+
 ### 1. customer_service_agent.py
-**Fully Implemented** - Complete example with:
 - Tools for balance checking, transfers, card management, disputes
 - Guidelines for various customer service scenarios
 - Journeys for account opening and fraud investigation
 - Security and compliance considerations
 
-### 2-5. Other Agents
+### 2. loan_officer_agent.py
+- Tools for DTI calculation, mortgage affordability, payment calculations
+- Guidelines for ethical lending and customer financial health
+- Journey for comprehensive mortgage pre-qualification
+- First-time homebuyer education
 
-Due to the comprehensive nature of the first implementation, the remaining agents follow the same pattern:
+### 3. investment_advisor_agent.py
+- Tools for retirement planning, asset allocation, investment growth projection
+- Guidelines for behavioral coaching during market volatility
+- Journey for comprehensive retirement planning
+- Risk tolerance assessment and diversification strategies
 
-- **loan_officer_agent.py**: Tools for loan applications, eligibility checks, document management
-- **investment_advisor_agent.py**: Tools for portfolio management, risk assessment, trade execution
-- **technical_support_agent.py**: Tools for password resets, troubleshooting, system checks
-- **developer_support_agent.py**: Tools for API testing, error diagnosis, documentation lookup
+### 4. technical_support_agent.py
+- Tools for password resets, account unlocking, system troubleshooting
+- Guidelines for patient, step-by-step technical support
+- Journeys for password reset and mobile app troubleshooting
+- Platform-specific guidance (iOS, Android, web browsers)
+
+### 5. developer_support_agent.py
+- Tools for API authentication, webhook debugging, error explanations
+- Guidelines for systematic API debugging and code samples
+- Journeys for OAuth setup and API error debugging
+- Technical documentation and code generation
 
 ## Usage Pattern
 

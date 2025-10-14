@@ -438,12 +438,10 @@ async def create_customer_service_agent(server: p.Server) -> p.Agent:
     f2 = await f1.target.transition_to(
         chat_state="If card-related fraud, immediately block the affected card(s) for their security",
         condition="The fraud involves a debit or credit card",
-        tools=[report_card_lost_stolen],
     )
 
     f3 = await f2.target.transition_to(
         chat_state="File a formal fraud dispute claim for the unauthorized transactions",
-        tools=[dispute_transaction],
     )
 
     f4 = await f3.target.transition_to(

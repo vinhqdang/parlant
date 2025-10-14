@@ -3,19 +3,19 @@
     "test_id": "cs_01",
     "test_name": "Simple Balance Inquiry",
     "agent_type": "customer_service",
-    "timestamp": "2025-10-14T16:01:00.607779",
+    "timestamp": "2025-10-14T17:06:08.797907",
     "traditional": {
       "responses": [
-        "Of course, I'd be happy to help you with that. For your security, I need to verify your identity before we proceed. May I please have your full name and the last four digits of your Social Security number? I'll also need to ask you a few security questions."
+        "Of course, I'd be happy to help you with that. For your security, I need to verify your identity before we proceed. May I please have your full name and the last four digits of your Social Security number? I'll also need to ask you a few security questions. Once I have this information, I can provide you with your checking account balance."
       ],
-      "duration_seconds": 2.4801108837127686,
+      "duration_seconds": 3.2804622650146484,
       "prompt_length": 17523
     },
     "parlant": {
       "responses": [
         "[Simulated Parlant response with guideline-based behavior control]"
       ],
-      "duration_seconds": 3.337860107421875e-06,
+      "duration_seconds": 7.62939453125e-06,
       "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
       "tools_called": "[Simulated: Would show which tools were executed]"
     },
@@ -39,13 +39,13 @@
     "test_id": "cs_02",
     "test_name": "Unrecognized Transaction",
     "agent_type": "customer_service",
-    "timestamp": "2025-10-14T16:01:03.087915",
+    "timestamp": "2025-10-14T17:06:12.078415",
     "traditional": {
       "responses": [
-        "I understand seeing an unrecognized charge can be concerning. Let's take a closer look and figure this out together. Before we proceed, for your security, could you please provide me with your full name and the last four digits of your Social Security number? Additionally, I'll ask a few security questions to verify your identity.\n\nOnce we\u2019ve confirmed that, we can investigate this $45.67 charge from AMAZON.COM. Can you also tell me the date of the charge? This will help me locate it more quickly in your transaction history.",
-        "No problem at all! It happens to the best of us. If there's anything else you're unsure about or any other way I can assist you today, please don't hesitate to ask. Whether it's related to your account or any other banking needs, I'm here to help. Is there anything else you would like to inquire about or any other assistance I can provide?"
+        "I understand your concern about the unrecognized charge of $45.67 from AMAZON.COM on your account. Let\u2019s work together to address this issue.\n\nFirst, for your security, I need to verify your identity. Could you please provide me with your full name and the last four digits of your Social Security number? I will also ask a few security questions to ensure the safety of your account.\n\nOnce we've confirmed your identity, I'll review the transaction details with you. We'll examine the date, time, and any additional information related to this charge to help identify it. Sometimes merchant names on statements might not exactly match the store name where the purchase was made, or it might be a subscription or a purchase you might not immediately recall.\n\nIf we determine that the charge is indeed unauthorized, I'll guide you through the steps to dispute it and ensure your account is secure. We\u2019ll also discuss monitoring your account for any additional suspicious activity and potentially replacing your card to prevent further unauthorized charges.\n\nLet's start with the verification process. Can you please provide the requested information?",
+        "Thank you for letting me know! I'm glad we could clarify that. If you ever come across any transactions in the future that you don't recognize or if you have any other questions or concerns about your account, please don't hesitate to reach out.\n\nIs there anything else I can assist you with today?"
       ],
-      "duration_seconds": 7.369996786117554,
+      "duration_seconds": 11.451420545578003,
       "prompt_length": 17523
     },
     "parlant": {
@@ -53,7 +53,7 @@
         "[Simulated Parlant response with guideline-based behavior control]",
         "[Simulated Parlant response with guideline-based behavior control]"
       ],
-      "duration_seconds": 7.3909759521484375e-06,
+      "duration_seconds": 1.7881393432617188e-05,
       "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
       "tools_called": "[Simulated: Would show which tools were executed]"
     },
@@ -76,14 +76,14 @@
     "test_id": "cs_03",
     "test_name": "Fraud Report - Urgent",
     "agent_type": "customer_service",
-    "timestamp": "2025-10-14T16:01:10.457931",
+    "timestamp": "2025-10-14T17:06:23.529887",
     "traditional": {
       "responses": [
-        "I'm very sorry to hear you're experiencing unauthorized charges on your account. It's crucial we address this immediately. To begin, I need to verify your identity for security purposes. Could you please provide me with your full name and the last four digits of your Social Security number? I will also ask a few security questions to ensure your account's protection.\n\nOnce we've securely verified your identity, I'll assist you with the following steps:\n1. Review the unauthorized charges in detail\u2014knowing the dates and amounts will be helpful.\n2. Place a temporary block on your card to prevent any further unauthorized transactions.\n3. File a detailed fraud claim for the charges you didn't authorize.\n4. Discuss the options for securing your account further and issuing a replacement card if necessary.\n\nLet's take care of this right away to secure your account and resolve the situation.",
-        "Thank you for providing the details about the unauthorized charges. Before we move forward with addressing these transactions, let's first go through the security verification process to protect your account. Please provide me with your full name and the last four digits of your Social Security number. Additionally, I will ask a few security questions for verification purposes.\n\nAfter we've confirmed your identity:\n\n1. **Identify and Review Transactions:** We'll review the three charges from the website you mentioned, focusing on transaction dates, amounts, and any other identifying details.\n\n2. **Immediate Action:** I will place a temporary block on your card to stop any further unauthorized activity and ensure your account's security.\n\n3. **Fraud Claim Process:** We'll initiate a fraud claim for these transactions. You'll be provided with all necessary information regarding the investigation process, timeline, and any immediate credit you may receive for the disputed charges.\n\n4. **Securing Your Account:** We'll discuss replacing your compromised card and updating your account's security settings to prevent future unauthorized access.\n\n5. **Follow-Up:** I\u2019ll explain how you can monitor your account and what additional steps you should take, such as updating your login information and passwords for online banking.\n\nPlease rest assured, we'll handle each step with urgency and care to resolve this issue and secure your account. Let\u2019s start with the verification process. Could you please provide the required information so we can proceed?",
-        "I'm glad you have your card handy, but for security reasons, I won't ask for your card number over this chat. Instead, to help safeguard your account information, I'll need you to provide some verification details. Could you please share your full name and the last four digits of your Social Security number? Additionally, I\u2019ll ask some security questions to fully verify your identity and ensure the safety of your account information.\n\nOnce we've securely verified your identity, we can proceed with addressing the unauthorized charges on your account. We\u2019ll take all necessary steps to dispute these charges, secure your account, and get everything back in order for you. Let\u2019s start with the verification process \u2013 could you please provide the required information?"
+        "I'm really sorry to hear that you've found charges on your account that you didn't authorize. It's crucial that we act swiftly to address this issue and secure your account. \n\nBefore we proceed, I need to verify your identity for the security of your account. Could you please provide your full name and the last four digits of your Social Security number? I'll also ask you a few security questions.\n\nOnce we've verified your identity, here are the steps we will take:\n\n1. **Review the Charges:** I'll help you go through the transaction details of the charges you don't recognize.\n\n2. **Secure Your Account:** We'll immediately place holds or freezes on your account to prevent any further unauthorized transactions. This may involve temporarily disabling your current debit/credit card and issuing a new one.\n\n3. **File a Fraud Claim:** I'll file a detailed fraud claim on your behalf with all the information about the unauthorized charges. \n\n4. **Fraud Investigation Process:** I'll explain how the fraud investigation process works and what the expected timeline might be. \n\n5. **Temporary Credit:** Depending on the situation and our bank's policies, we may issue a temporary credit to your account for the disputed amount while the investigation is ongoing.\n\n6. **Additional Security Measures:** We'll discuss setting up additional security measures on your account to prevent future unauthorized access.\n\n7. **Next Steps:** I will guide you on monitoring your account for any further unusual activity and advise on any additional steps you should take, such as changing online banking passwords or filing a police report.\n\nLet's start with the verification process. Can you please provide the requested information?",
+        "I understand how concerning it must be to see unfamiliar charges, especially of such a significant amount. Let's work step by step to address this issue and ensure your account security is reinstated.\n\nBefore we dive into the details of these charges, for your security and account protection, I need to verify your identity. Can you please provide me with your full name and the last four digits of your Social Security number? Additionally, I will ask you a few security questions.\n\nAfter we have verified your identity, here's what we'll do:\n\n1. **Specific Details:** We\u2019ll review each of the three charges you mentioned, looking at the merchant, transaction date, amount, and any other available details to better understand the context and identify any potential patterns.\n\n2. **Immediate Action:** I will place a temporary block on your card to prevent any further unauthorized transactions. This is a crucial step to secure your account right away.\n\n3. **Dispute Process:** We\u2019ll initiate a dispute for each of these unauthorized charges. I\u2019ll file the necessary claims on your behalf to start the investigation process.\n\n4. **Fraud Claims:** Our fraud department will then take over the investigation of these charges. I will provide you with all relevant information and reference numbers related to these claims.\n\n5. **Temporary Credits:** Depending on our bank's policies and the specifics of your situation, we may be able to issue temporary credits for the disputed amounts while the investigation is ongoing.\n\n6. **Account Security:** We will discuss additional security measures to safeguard your account. This may include setting up new account alerts, revising security questions, or other personalized security features.\n\n7. **Next Steps:** I will guide you through getting a new card issued to replace the one we\u2019re temporarily blocking. We'll also discuss how to monitor your account for any future unauthorized transactions.\n\n8. **Follow-Up:** We will determine the best way to keep you informed of the progress of your dispute claims and what to expect in the coming days.\n\nPlease provide the requested information to start with the verification process, and rest assured, we\u2019re here to help you through this every step of the way.",
+        "That's a good first step. However, for me to access your account details and assist you further, I still need to verify your identity for security purposes. Could you please provide your full name and the last four digits of your Social Security number? Additionally, I'll need to ask you a few security questions.\n\nOnce I have verified your identity, we will immediately take action to address the unauthorized charges you've mentioned and work on securing your account. Please provide the requested information when you're ready."
       ],
-      "duration_seconds": 19.8603093624115,
+      "duration_seconds": 31.11834740638733,
       "prompt_length": 17523
     },
     "parlant": {
@@ -92,7 +92,7 @@
         "[Simulated Parlant response with guideline-based behavior control]",
         "[Simulated Parlant response with guideline-based behavior control]"
       ],
-      "duration_seconds": 4.5299530029296875e-06,
+      "duration_seconds": 1.0013580322265625e-05,
       "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
       "tools_called": "[Simulated: Would show which tools were executed]"
     },
@@ -119,14 +119,14 @@
     "test_id": "cs_04",
     "test_name": "Fee Reversal Request",
     "agent_type": "customer_service",
-    "timestamp": "2025-10-14T16:01:30.318259",
+    "timestamp": "2025-10-14T17:06:54.648271",
     "traditional": {
       "responses": [
-        "I completely understand how frustrating unexpected fees can be, and I'm here to help you with the overdraft fee concern. Let\u2019s first make sure your account is secure and I'm speaking with the authorized account holder.\n\nCould you please provide me with your full name and the last four digits of your Social Security number for verification? I'll also have a couple of security questions for you.\n\nAfter we've verified your identity:\n\n1. **Review the Transaction:** I\u2019ll review your account activity to understand the circumstances that led to the overdraft fee.\n2. **Explain the Overdraft Policy:** I'll explain how our overdraft policy works and why the fee was applied, so we can clarify any misunderstandings and help manage your account going forward.\n3. **Assess Fee Reversal Eligibility:** We can then look into your account history and see if we\u2019re able to waive the overdraft fee as a courtesy, depending on your account standing and history.\n4. **Discuss Overdraft Protection Options:** I'll also provide information about overdraft protection services that might prevent overdraft fees in the future, such as linking a savings account or an overdraft line of credit.\n5. **Financial Management Tips:** If helpful, I can offer some tips or services that might help you avoid similar situations moving forward.\n\nI'm here to assist, so let's start with the verification process to proceed with resolving this issue for you.",
-        "I understand how easy it can be to lose track of your account balance, especially with the many transactions that can occur. Let's address this issue step by step, ensuring that we take care of the immediate concern and also look into ways to help prevent this from happening in the future.\n\nFirst, for your security and to protect your account information, I need to verify your identity. Could you please provide me with your full name and the last four digits of your Social Security number? I\u2019ll also ask a couple of security questions.\n\nOnce we've verified your identity:\n\n1. **Review Your Account:** I\u2019ll take a closer look at your recent transactions to identify what led to the low funds and the subsequent overdraft fee.\n2. **Clarify How Overdrafts Happen:** We\u2019ll go through the specifics of how and when overdraft fees are applied, so you have a clear understanding moving forward.\n3. **Explore Fee Waiver Possibilities:** Based on your account history and standing, I'll see if we can waive the overdraft fee as a one-time courtesy. This can help alleviate the immediate financial strain.\n4. **Prevent Future Overdrafts:** We\u2019ll discuss options for managing your account more effectively. This might include setting up low balance alerts, reviewing your overdraft protection settings, or providing tips on budget management.\n5. **Educational Resources:** If you're interested, I can also guide you to some of our online tools and resources that can help with financial management and planning.\n\nI'm here to support you through this issue and provide any assistance you need. Let's start with the verification process so we can proceed in addressing your concerns effectively.",
-        "To assess if the overdraft fee can be reversed, I'll need to first verify your identity and review the circumstances surrounding the fee on your account. Could you please provide me with your full name and the last four digits of your Social Security number? Additionally, I'll ask a few security questions to ensure we protect your privacy and account security.\n\nAfter we've completed the verification:\n\n1. **Review the Fee Situation:** I\u2019ll examine the details of the transactions that led to the overdraft and the fee being charged to understand the full context.\n2. **Assess Account Standing:** I'll also look into your account history, including any past instances of fees and fee waivers. This helps determine our ability to accommodate your request based on our policies and your banking relationship.\n3. **Fee Reversal Policy:** Depending on your account standing and history of overdraft instances, we may be able to reverse the fee as a courtesy. Banks often have a policy in place that allows for occasional forgiveness of fees for customers in good standing.\n4. **Take Action:** If it's determined that we can reverse the fee, I will process that for you immediately. If, for any reason, we're unable to reverse the fee, I'll explain why and discuss any other ways we might assist.\n\nRemember, I'm here to help, so let\u2019s start with the verification process to ensure your request is handled promptly and correctly."
+        "I understand how an overdraft fee can be frustrating, and I'm here to help you with this situation. Let's see what we can do together to address and possibly resolve this matter for you.\n\nBefore proceeding, I'll need to verify your identity to ensure the security of your account information. Could you please provide your full name and the last four digits of your Social Security number? After that, I'll ask a few security questions for further verification.\n\nOnce we've completed the verification, I\u2019ll review your account to understand the circumstances that led to the overdraft fee. Here are the steps we'll follow:\n\n1. **Review Transaction History:** To understand the transactions that led to the overdraft situation.\n2. **Explain the Overdraft Fee:** I'll detail why the overdraft fee was applied, referencing your account's terms and conditions.\n3. **Assess Fee Waiver Eligibility:** Based on your account history and our conversation, I'll determine if we can waive the overdraft fee as a courtesy.\n4. **Discuss Overdraft Protection Options:** I'll provide information on services that may help prevent future overdraft fees, such as linking a savings account or an overdraft line of credit.\n5. **Financial Management Tips:** If helpful, I can offer advice or tools available through our bank that can help you manage your finances more effectively, such as account alerts or budgeting tools.\n6. **Take Action:** Depending on our findings and your eligibility, I'll proceed with actions agreed upon during our conversation, including any fee waiver or enrollment in overdraft protection services if you choose.\n\nPlease provide your full name and the last four digits of your Social Security number, and we can start addressing this issue right away.",
+        "Understanding that you were unaware of your account's low balance is important, and it highlights how easy it is to overlook our account status in busy times. After we verify your identity and review your account, we can explore solutions not just for the immediate issue of the overdraft fee, but also discuss how to help prevent this situation in the future. \n\nLet's start with verifying your identity for your security. Could you please provide your full name and the last four digits of your Social Security number? After verification, I will need to ask a few security questions.\n\nOnce we've taken care of that, here's how we'll proceed:\n\n1. **Transaction Review:** We'll look at your recent account activity together to identify how the balance became lower than expected.\n\n2. **Fee Waiver Considerations:** Based on your account history and our policies, I\u2019ll assess if we can waive the $35 overdraft fee as a one-time courtesy.\n\n3. **Notification and Alerts Setup:** I\u2019ll show you how to set up account alerts to notify you via email or text message when your balance falls below a threshold you choose. This can be a useful tool to help you manage your account more effectively.\n\n4. **Budgeting and Management Tools:** We offer several tools and resources that can help you track your spending and manage your account. I can guide you through these options.\n\n5. **Discuss Overdraft Protection Options:** To prevent future overdrafts, we can consider linking your checking account to another account for overdraft protection or exploring other solutions tailored to your banking behavior.\n\nPlease provide your full name and the last four digits of your Social Security number so we can start working on this together.",
+        "To assist with your request regarding the reversal of the $35 overdraft fee, I'll need to undertake a few steps, beginning with verifying your account details for security purposes. If you could provide me with your full name and the last four digits of your Social Security number, I will also ask you a few additional security questions to confirm your identity.\n\nAfter we've verified your identity and I've reviewed your account, I'll assess several factors such as your account history, the frequency of overdrafts, and any previous adjustments to see if we can waive the fee this time. It's important to note that while I'm committed to assisting you, fee reversal is subject to certain policies and your account standing.\n\nIf the fee can be reversed, I will immediately process this for you. Regardless of the outcome, I'm here to help you understand more about how overdrafts occur and discuss any measures we can put in place to help avoid future overdraft fees, such as setting up low balance alerts or exploring overdraft protection options.\n\nPlease provide your full name and the last four digits of your Social Security number to begin."
       ],
-      "duration_seconds": 28.65938448905945,
+      "duration_seconds": 24.973728895187378,
       "prompt_length": 17523
     },
     "parlant": {
@@ -135,7 +135,7 @@
         "[Simulated Parlant response with guideline-based behavior control]",
         "[Simulated Parlant response with guideline-based behavior control]"
       ],
-      "duration_seconds": 5.7220458984375e-06,
+      "duration_seconds": 2.574920654296875e-05,
       "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
       "tools_called": "[Simulated: Would show which tools were executed]"
     },
@@ -160,19 +160,19 @@
     "test_id": "cs_05",
     "test_name": "Out of Scope Question",
     "agent_type": "customer_service",
-    "timestamp": "2025-10-14T16:01:58.977664",
+    "timestamp": "2025-10-14T17:07:19.622059",
     "traditional": {
       "responses": [
-        "I'm here to assist with banking-related inquiries and might not have the most up-to-date weather information. For the most accurate and current weather forecast, I recommend checking a reliable weather service website or app like the National Weather Service, Weather.com, or your local news channel's weather forecast. These sources can provide detailed weather predictions including temperature, precipitation, and any weather advisories for your area.\n\nIf you have any banking needs or further questions I can assist with, feel free to let me know!"
+        "I'm here to help with all your banking and financial inquiries. For up-to-date weather forecasts, I recommend checking a reliable weather service or app like the National Weather Service, Weather.com, or your preferred local weather station. They can provide you with the most accurate and current weather predictions for your area.\n\nIf there's anything else bank-related or if you have another question I can assist with, please feel free to let me know!"
       ],
-      "duration_seconds": 4.085885763168335,
+      "duration_seconds": 3.222707986831665,
       "prompt_length": 17523
     },
     "parlant": {
       "responses": [
         "[Simulated Parlant response with guideline-based behavior control]"
       ],
-      "duration_seconds": 2.86102294921875e-06,
+      "duration_seconds": 7.867813110351562e-06,
       "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
       "tools_called": "[Simulated: Would show which tools were executed]"
     },

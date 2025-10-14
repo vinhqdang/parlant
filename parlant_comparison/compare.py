@@ -10,7 +10,7 @@ import os
 import time
 from datetime import datetime
 from pathlib import Path
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Optional
 import sys
 
 # Add test scenarios to path
@@ -22,6 +22,9 @@ from test_scenarios.test_cases import get_test_cases, TestCase
 try:
     from config import config
     HAS_CONFIG = True
+    # Set environment variable for Parlant server
+    if config and config.OPENAI_API_KEY:
+        os.environ['OPENAI_API_KEY'] = config.OPENAI_API_KEY
 except ImportError:
     HAS_CONFIG = False
     config = None
@@ -41,9 +44,11 @@ except ImportError:
 
 try:
     import parlant.sdk as p
+    from parlant.client import AsyncParlantClient as Client
     HAS_PARLANT = True
 except (ImportError, TypeError) as e:
     HAS_PARLANT = False
+    Client = None
     print(f"Note: Parlant SDK not available ({type(e).__name__}). Will use simulation for Parlant agents.")
 
 
@@ -92,67 +97,58 @@ class PromptBasedAgent:
 
 
 class ParlantAgent:
-    """Parlant-based agent using Parlant SDK."""
+    """Parlant-based agent using Parlant Client API."""
 
-    def __init__(self, agent_name: str, server=None, agent_id=None):
-        """Initialize Parlant agent."""
-        self.agent_name = agent_name
-        self.server = server
+    def __init__(self, agent_id: str, client: Client):
+        """Initialize Parlant agent wrapper."""
         self.agent_id = agent_id
-        self.session_id = None
-        self.customer_id = None
-        self.use_simulation = server is None or agent_id is None
-
-    async def initialize_session(self):
-        """Create a session for this interaction."""
-        if not self.use_simulation and self.server:
-            # Create or get customer
-            customers = await self.server.list_customers()
-            if customers:
-                self.customer_id = customers[0].id
-            else:
-                customer = await self.server.create_customer(name="Test Customer")
-                self.customer_id = customer.id
-
-            # Create session
-            session = await self.server.create_session(
-                agent_id=self.agent_id,
-                customer_id=self.customer_id
-            )
-            self.session_id = session.id
+        self.client = client
+        self.session_id: Optional[str] = None
 
     async def send_message(self, message: str) -> str:
         """Send a message through Parlant framework."""
-        if self.use_simulation:
-            # Fallback to simulation
-            return f"[Simulated Parlant response with guideline-based behavior control]"
-
+        # Create new session if needed
         if not self.session_id:
-            await self.initialize_session()
+            try:
+                session = await self.client.sessions.create(
+                    agent_id=self.agent_id,
+                    allow_greeting=False,
+                )
+                self.session_id = session.id
+            except Exception as e:
+                print(f"Warning: Failed to create Parlant session: {e}")
+                return "[Error creating session]"
 
-        # Send message through Parlant
-        await self.server.create_event(
-            session_id=self.session_id,
-            kind="message",
-            source="customer",
-            message=message
-        )
+        try:
+            # Send customer message
+            event = await self.client.sessions.create_event(
+                session_id=self.session_id,
+                kind="message",
+                source="customer",
+                message=message,
+            )
 
-        # Wait for agent response
-        await asyncio.sleep(2)  # Give agent time to process
+            # Wait for AI agent response
+            agent_messages = await self.client.sessions.list_events(
+                session_id=self.session_id,
+                min_offset=event.offset,
+                source="ai_agent",
+                kinds="message",
+                wait_for_data=30,
+            )
 
-        # Fetch latest events
-        events = await self.server.list_events(
-            session_id=self.session_id,
-            wait_for_data=10
-        )
+            if agent_messages:
+                return agent_messages[0].model_dump().get("data", {}).get("message", "[No response]")
 
-        # Find the latest AI agent message
-        for event in reversed(events):
-            if event.kind == "message" and event.source == "ai_agent":
-                return event.data.get("message", "[No response]")
+            return "[No response from agent]"
 
-        return "[No response from agent]"
+        except Exception as e:
+            print(f"Error sending message to Parlant: {e}")
+            return f"[Error: {str(e)}]"
+
+    async def close(self):
+        """Close resources - no-op for client API."""
+        pass
 
 
 class ComparisonRunner:
@@ -164,8 +160,10 @@ class ComparisonRunner:
         self.output_dir.mkdir(exist_ok=True, parents=True)
         self.results: List[Dict[str, Any]] = []
         self.llm_client = None
-        self.parlant_server = None
+        self.parlant_server_task = None
+        self.parlant_client = None
         self.parlant_agents = {}
+        self.parlant_port = 8765
 
     async def initialize_llm_client(self):
         """Initialize LLM client based on available API keys."""
@@ -198,45 +196,70 @@ class ComparisonRunner:
         print("  Add API keys to config/config.py or set environment variables.")
 
     async def initialize_parlant_server(self):
-        """Initialize Parlant server and create agents."""
-        if not HAS_PARLANT:
+        """Initialize Parlant HTTP server and create agents."""
+        if not HAS_PARLANT or Client is None:
             print("⚠ Parlant SDK not installed. Using simulation for Parlant agents.")
             return
 
         try:
-            # Create Parlant server
-            self.parlant_server = await p.Server().__aenter__()
+            # Start Parlant HTTP server in background
+            print(f"✓ Starting Parlant HTTP server on port {self.parlant_port}...")
+            server = p.Server(port=self.parlant_port, log_level=p.LogLevel.WARNING)
 
-            # Import all agent creation functions
-            sys.path.insert(0, str(Path(__file__).parent / "parlant_agents"))
-            from customer_service_agent import create_customer_service_agent
-            from loan_officer_agent import create_loan_officer_agent
-            from investment_advisor_agent import create_investment_advisor_agent
-            from technical_support_agent import create_technical_support_agent
-            from developer_support_agent import create_developer_support_agent
+            async def start_server():
+                async with server:
+                    await asyncio.Future()  # Wait forever
 
-            # Create all agents
+            self.parlant_server_task = asyncio.create_task(start_server())
+
+            # Wait for server to be ready
+            self.parlant_client = Client(base_url=f"http://localhost:{self.parlant_port}")
+            for _ in range(30):
+                try:
+                    await self.parlant_client.agents.list()
+                    print("✓ Parlant HTTP server ready")
+                    break
+                except Exception:
+                    await asyncio.sleep(0.5)
+            else:
+                print("⚠ Parlant server did not start in time")
+                self.parlant_server_task.cancel()
+                return
+
+            # Create all agents via SDK
             print("Creating Parlant agents...")
-            cs_agent = await create_customer_service_agent(self.parlant_server)
-            self.parlant_agents["customer_service"] = cs_agent.id
+            async with p.Server(port=self.parlant_port) as setup_server:
+                # Import all agent creation functions
+                sys.path.insert(0, str(Path(__file__).parent / "parlant_agents"))
+                from customer_service_agent import create_customer_service_agent
+                from loan_officer_agent import create_loan_officer_agent
+                from investment_advisor_agent import create_investment_advisor_agent
+                from technical_support_agent import create_technical_support_agent
+                from developer_support_agent import create_developer_support_agent
 
-            lo_agent = await create_loan_officer_agent(self.parlant_server)
-            self.parlant_agents["loan_officer"] = lo_agent.id
+                # Create all agents
+                cs_agent = await create_customer_service_agent(setup_server)
+                self.parlant_agents["customer_service"] = cs_agent.id
 
-            ia_agent = await create_investment_advisor_agent(self.parlant_server)
-            self.parlant_agents["investment_advisor"] = ia_agent.id
+                lo_agent = await create_loan_officer_agent(setup_server)
+                self.parlant_agents["loan_officer"] = lo_agent.id
 
-            ts_agent = await create_technical_support_agent(self.parlant_server)
-            self.parlant_agents["technical_support"] = ts_agent.id
+                ia_agent = await create_investment_advisor_agent(setup_server)
+                self.parlant_agents["investment_advisor"] = ia_agent.id
 
-            ds_agent = await create_developer_support_agent(self.parlant_server)
-            self.parlant_agents["developer_support"] = ds_agent.id
+                ts_agent = await create_technical_support_agent(setup_server)
+                self.parlant_agents["technical_support"] = ts_agent.id
+
+                ds_agent = await create_developer_support_agent(setup_server)
+                self.parlant_agents["developer_support"] = ds_agent.id
 
             print(f"✓ Parlant server initialized with {len(self.parlant_agents)} agent(s)")
 
         except Exception as e:
             print(f"⚠ Error initializing Parlant server: {e}")
             print("  Using simulation mode for Parlant agents.")
+            if self.parlant_server_task:
+                self.parlant_server_task.cancel()
 
     async def run_test_case(
         self,
@@ -319,13 +342,18 @@ class ComparisonRunner:
         # Create traditional agent with LLM client
         traditional_agent = PromptBasedAgent(prompt_file, self.llm_client)
 
-        # Create Parlant agent
+        # Create Parlant agent if we have the client
         agent_id = self.parlant_agents.get(agent_type)
-        parlant_agent = ParlantAgent(
-            agent_type,
-            server=self.parlant_server,
-            agent_id=agent_id
-        )
+        if agent_id and self.parlant_client:
+            parlant_agent = ParlantAgent(agent_id, self.parlant_client)
+        else:
+            # Fallback: create a dummy agent that returns simulation messages
+            class SimulationAgent:
+                async def send_message(self, message: str) -> str:
+                    return "[Simulated Parlant response with guideline-based behavior control]"
+                async def close(self):
+                    pass
+            parlant_agent = SimulationAgent()
 
         # Get test cases
         test_cases = get_test_cases(agent_type)
@@ -341,6 +369,9 @@ class ComparisonRunner:
             agent_results.append(result)
             self.results.append(result)
 
+        # Close Parlant agent client
+        await parlant_agent.close()
+
         # Save agent-specific results
         agent_output_file = self.output_dir / f"{agent_type}_comparison.json"
         with open(agent_output_file, "w") as f:
@@ -351,32 +382,42 @@ class ComparisonRunner:
     async def run_all_comparisons(self) -> None:
         """Run comparisons for all agent types."""
 
-        # Initialize LLM client and Parlant server
-        await self.initialize_llm_client()
-        await self.initialize_parlant_server()
+        try:
+            # Initialize LLM client and Parlant server
+            await self.initialize_llm_client()
+            await self.initialize_parlant_server()
 
-        print()  # Blank line after initialization
+            print()  # Blank line after initialization
 
-        agent_types = [
-            "customer_service",
-            "loan_officer",
-            "investment_advisor",
-            "technical_support",
-            "developer_support",
-        ]
+            agent_types = [
+                "customer_service",
+                "loan_officer",
+                "investment_advisor",
+                "technical_support",
+                "developer_support",
+            ]
 
-        for agent_type in agent_types:
-            await self.run_agent_comparison(agent_type)
+            for agent_type in agent_types:
+                await self.run_agent_comparison(agent_type)
 
-        # Save combined results
-        combined_file = self.output_dir / "all_comparisons.json"
-        with open(combined_file, "w") as f:
-            json.dump(self.results, f, indent=2)
+            # Save combined results
+            combined_file = self.output_dir / "all_comparisons.json"
+            with open(combined_file, "w") as f:
+                json.dump(self.results, f, indent=2)
 
-        print(f"\n✓ All results saved to: {combined_file}")
+            print(f"\n✓ All results saved to: {combined_file}")
 
-        # Generate summary report
-        self.generate_summary_report()
+            # Generate summary report
+            self.generate_summary_report()
+
+        finally:
+            # Clean up Parlant server
+            if self.parlant_server_task:
+                self.parlant_server_task.cancel()
+                try:
+                    await self.parlant_server_task
+                except asyncio.CancelledError:
+                    pass
 
     def generate_summary_report(self) -> None:
         """Generate a markdown summary report."""

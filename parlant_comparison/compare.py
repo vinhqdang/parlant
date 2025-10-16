@@ -104,6 +104,8 @@ class ParlantAgent:
         self.agent_id = agent_id
         self.client = client
         self.session_id: Optional[str] = None
+        self.guidelines_matched: List[str] = []
+        self.tools_called: List[str] = []
 
     async def send_message(self, message: str) -> str:
         """Send a message through Parlant framework."""
@@ -140,6 +142,34 @@ class ParlantAgent:
                 kinds="message",
                 wait_for_data=30,
             )
+
+            # Also get all events to see guidelines and tool calls
+            try:
+                all_events = await self.client.sessions.list_events(
+                    session_id=self.session_id,
+                    min_offset=event.offset,
+                )
+
+                # Extract guidelines and tools from events
+                for evt in all_events:
+                    evt_dict = evt.model_dump()
+                    evt_kind = evt_dict.get("kind", "")
+                    evt_data = evt_dict.get("data", {})
+
+                    # Check for guideline-related events
+                    if "guideline" in evt_kind.lower():
+                        guideline_info = evt_data.get("guideline_id") or evt_data.get("name") or evt_kind
+                        if guideline_info not in self.guidelines_matched:
+                            self.guidelines_matched.append(str(guideline_info))
+
+                    # Check for tool call events
+                    if "tool" in evt_kind.lower() or evt_kind == "action":
+                        tool_name = evt_data.get("tool_name") or evt_data.get("name") or evt_kind
+                        if tool_name not in self.tools_called:
+                            self.tools_called.append(str(tool_name))
+            except Exception:
+                # If we can't get metadata, just continue
+                pass
 
             if agent_messages:
                 return agent_messages[0].model_dump().get("data", {}).get("message", "[No response]")
@@ -376,11 +406,19 @@ class ComparisonRunner:
             print(f"Agent: {response}\n")
         parlant_duration = time.time() - parlant_start
 
+        # Get real guideline and tool data if available
+        if isinstance(parlant_agent, ParlantAgent):
+            guidelines_info = parlant_agent.guidelines_matched if parlant_agent.guidelines_matched else ["None detected"]
+            tools_info = parlant_agent.tools_called if parlant_agent.tools_called else ["None called"]
+        else:
+            guidelines_info = ["[Simulated agent - no data]"]
+            tools_info = ["[Simulated agent - no data]"]
+
         result["parlant"] = {
             "responses": parlant_responses,
             "duration_seconds": parlant_duration,
-            "guidelines_matched": "[Simulated: Would show which guidelines triggered]",
-            "tools_called": "[Simulated: Would show which tools were executed]",
+            "guidelines_matched": guidelines_info,
+            "tools_called": tools_info,
         }
 
         # Evaluation (in production, this would use LLM-as-judge or human evaluation)

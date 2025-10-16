@@ -34,6 +34,9 @@ async def main():
     # Start server in background
     server_task = asyncio.create_task(run_server())
 
+    # Give event loop a chance to start the server task
+    await asyncio.sleep(0)
+
     # Connect with client
     print("Connecting client...")
     client = Client(base_url=f"http://localhost:{port}")

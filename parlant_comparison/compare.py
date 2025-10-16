@@ -216,10 +216,17 @@ class ComparisonRunner:
             from technical_support_agent import create_technical_support_agent
             from developer_support_agent import create_developer_support_agent
 
-            # Create server instance
-            server = p.Server(port=self.parlant_port, log_level=p.LogLevel.WARNING)
+            # Create server instance (need tool_service_port for tools to work)
+            import random
+            tool_port = random.randint(9000, 9999)
+            server = p.Server(
+                port=self.parlant_port,
+                tool_service_port=tool_port,
+                log_level=p.LogLevel.WARNING
+            )
 
             # Define the server task that creates agents then runs
+            # Pattern matches SDK test structure
             async def start_server_with_agents():
                 async with server:
                     # Create all agents within the server context
@@ -241,8 +248,12 @@ class ComparisonRunner:
 
                     print(f"✓ Parlant server initialized with {len(self.parlant_agents)} agent(s)")
 
-                    # Keep server running
-                    await asyncio.Future()  # Wait forever
+                    # Server stays running - context stays open until task is cancelled
+                    try:
+                        await asyncio.Future()  # Wait forever
+                    except asyncio.CancelledError:
+                        print("✓ Parlant server shutting down...")
+                        raise
 
             # Start the server task
             self.parlant_server_task = asyncio.create_task(start_server_with_agents())

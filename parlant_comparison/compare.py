@@ -225,47 +225,35 @@ class ComparisonRunner:
                 log_level=p.LogLevel.WARNING
             )
 
-            # Define the server task that creates agents then runs
-            # Pattern matches SDK test structure
+            # Define the server task that creates agents then starts HTTP server
+            # Matches SDK test structure: create agents, EXIT context, then HTTP serves
             async def start_server_with_agents():
                 try:
                     async with server:
                         # Create all agents within the server context
-                        print("DEBUG: Entered server context, creating agents...")
+                        print("Creating Parlant agents...")
 
-                        print("DEBUG: Creating customer service agent...")
                         cs_agent = await create_customer_service_agent(server)
                         self.parlant_agents["customer_service"] = cs_agent.id
-                        print(f"DEBUG: Created customer service agent: {cs_agent.id}")
 
-                        print("DEBUG: Creating loan officer agent...")
                         lo_agent = await create_loan_officer_agent(server)
                         self.parlant_agents["loan_officer"] = lo_agent.id
-                        print(f"DEBUG: Created loan officer agent: {lo_agent.id}")
 
-                        print("DEBUG: Creating investment advisor agent...")
                         ia_agent = await create_investment_advisor_agent(server)
                         self.parlant_agents["investment_advisor"] = ia_agent.id
-                        print(f"DEBUG: Created investment advisor agent: {ia_agent.id}")
 
-                        print("DEBUG: Creating technical support agent...")
                         ts_agent = await create_technical_support_agent(server)
                         self.parlant_agents["technical_support"] = ts_agent.id
-                        print(f"DEBUG: Created technical support agent: {ts_agent.id}")
 
-                        print("DEBUG: Creating developer support agent...")
                         ds_agent = await create_developer_support_agent(server)
                         self.parlant_agents["developer_support"] = ds_agent.id
-                        print(f"DEBUG: Created developer support agent: {ds_agent.id}")
 
-                        print(f"✓ Parlant server initialized with {len(self.parlant_agents)} agent(s)")
+                        print(f"✓ Created {len(self.parlant_agents)} agent(s)")
 
-                        # Server stays running - context stays open until task is cancelled
-                        try:
-                            await asyncio.Future()  # Wait forever
-                        except asyncio.CancelledError:
-                            print("✓ Parlant server shutting down...")
-                            raise
+                    # Context exits here - HTTP server starts now!
+                    # This is the key: serve_app runs after exiting the context
+                    print("✓ Agents created, HTTP server starting...")
+
                 except Exception as e:
                     print(f"ERROR in server task: {e}")
                     import traceback

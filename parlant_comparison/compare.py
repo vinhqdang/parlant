@@ -202,35 +202,9 @@ class ComparisonRunner:
             return
 
         try:
-            # Start Parlant HTTP server in background FIRST
-            print(f"✓ Starting Parlant HTTP server on port {self.parlant_port}...")
-            server = p.Server(port=self.parlant_port, log_level=p.LogLevel.WARNING)
+            print(f"✓ Creating Parlant server and agents on port {self.parlant_port}...")
 
-            async def start_server():
-                async with server:
-                    await asyncio.Future()  # Wait forever
-
-            self.parlant_server_task = asyncio.create_task(start_server())
-
-            # Wait for server to be ready (server needs time to cache embeddings - ~60s)
-            self.parlant_client = Client(base_url=f"http://localhost:{self.parlant_port}")
-            print("Waiting for Parlant server to be ready (this may take 1-2 minutes for initial embedding cache)...")
-            for attempt in range(150):  # 150 attempts * 1 second = 150 seconds timeout
-                try:
-                    await self.parlant_client.agents.list()
-                    print(f"✓ Parlant HTTP server ready after {attempt+1} seconds")
-                    break
-                except Exception as e:
-                    if attempt == 0 or attempt % 15 == 0:
-                        print(f"  Still waiting (attempt {attempt+1}/150)...")
-                    await asyncio.sleep(1)
-            else:
-                print("⚠ Parlant server did not start in time after 150 seconds")
-                self.parlant_server_task.cancel()
-                return
-
-            # NOW create all agents via SDK (using same port connects to running server)
-            print("Creating Parlant agents...")
+            # Import agent creation functions
             sys.path.insert(0, str(Path(__file__).parent / "parlant_agents"))
             from customer_service_agent import create_customer_service_agent
             from loan_officer_agent import create_loan_officer_agent
@@ -238,24 +212,58 @@ class ComparisonRunner:
             from technical_support_agent import create_technical_support_agent
             from developer_support_agent import create_developer_support_agent
 
-            async with p.Server(port=self.parlant_port) as setup_server:
-                # Create all agents
-                cs_agent = await create_customer_service_agent(setup_server)
-                self.parlant_agents["customer_service"] = cs_agent.id
+            # Create server instance
+            server = p.Server(port=self.parlant_port, log_level=p.LogLevel.WARNING)
 
-                lo_agent = await create_loan_officer_agent(setup_server)
-                self.parlant_agents["loan_officer"] = lo_agent.id
+            # Define the server task that creates agents then runs
+            async def start_server_with_agents():
+                async with server:
+                    # Create all agents within the server context
+                    print("Creating Parlant agents...")
+                    cs_agent = await create_customer_service_agent(server)
+                    self.parlant_agents["customer_service"] = cs_agent.id
 
-                ia_agent = await create_investment_advisor_agent(setup_server)
-                self.parlant_agents["investment_advisor"] = ia_agent.id
+                    lo_agent = await create_loan_officer_agent(server)
+                    self.parlant_agents["loan_officer"] = lo_agent.id
 
-                ts_agent = await create_technical_support_agent(setup_server)
-                self.parlant_agents["technical_support"] = ts_agent.id
+                    ia_agent = await create_investment_advisor_agent(server)
+                    self.parlant_agents["investment_advisor"] = ia_agent.id
 
-                ds_agent = await create_developer_support_agent(setup_server)
-                self.parlant_agents["developer_support"] = ds_agent.id
+                    ts_agent = await create_technical_support_agent(server)
+                    self.parlant_agents["technical_support"] = ts_agent.id
 
-            print(f"✓ Parlant server initialized with {len(self.parlant_agents)} agent(s)")
+                    ds_agent = await create_developer_support_agent(server)
+                    self.parlant_agents["developer_support"] = ds_agent.id
+
+                    print(f"✓ Parlant server initialized with {len(self.parlant_agents)} agent(s)")
+
+                    # Keep server running
+                    await asyncio.Future()  # Wait forever
+
+            # Start the server task
+            self.parlant_server_task = asyncio.create_task(start_server_with_agents())
+
+            # Wait for server to be ready and agents to be created
+            self.parlant_client = Client(base_url=f"http://localhost:{self.parlant_port}")
+            print("Waiting for Parlant server to be ready (this may take 1-2 minutes for initial embedding cache)...")
+
+            for attempt in range(150):  # 150 attempts * 1 second = 150 seconds timeout
+                try:
+                    agents = await self.parlant_client.agents.list()
+                    # Wait until we have all 5 agents created
+                    if len(agents) >= 5:
+                        print(f"✓ Parlant server ready with {len(agents)} agents after {attempt+1} seconds")
+                        break
+                except Exception as e:
+                    pass
+
+                if attempt == 0 or attempt % 15 == 0:
+                    print(f"  Still waiting for agents (attempt {attempt+1}/150)...")
+                await asyncio.sleep(1)
+            else:
+                print("⚠ Parlant server did not start in time after 150 seconds")
+                self.parlant_server_task.cancel()
+                return
 
         except Exception as e:
             print(f"⚠ Error initializing Parlant server: {e}")

@@ -1,6 +1,6 @@
 # Parlant vs Traditional Prompts - Comparison Report
 
-**Generated:** 2025-10-14 17:15:40
+**Generated:** 2025-10-16 20:28:59
 
 ## Overview
 

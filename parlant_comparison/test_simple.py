@@ -27,8 +27,8 @@ async def main():
             )
             print(f"✓ Agent created with ID: {agent.id}")
 
-            # Keep server running
-            print("Server ready, waiting forever...")
+            # Keep server running - HTTP server is now accepting connections
+            print("Server ready, HTTP endpoint active, waiting forever...")
             await asyncio.Future()
 
     # Start server in background
@@ -40,7 +40,7 @@ async def main():
 
     # Wait for server to be ready by polling (like SDK tests do)
     print("Waiting for server to be ready...")
-    for attempt in range(30):
+    for attempt in range(60):  # Increased from 30 to 60
         # Check if server task failed
         if server_task.done():
             try:
@@ -53,11 +53,11 @@ async def main():
 
         try:
             agents = await client.agents.list()
-            print(f"✓ Server ready after {attempt+1} attempts")
+            print(f"✓ Server ready after {attempt+1} attempts ({(attempt+1)*0.5:.1f}s)")
             break
         except Exception as e:
-            if attempt % 5 == 0:
-                print(f"  Attempt {attempt+1}/30: {type(e).__name__}")
+            if attempt % 10 == 0:
+                print(f"  Attempt {attempt+1}/60: {type(e).__name__} (waiting for HTTP server...)")
             await asyncio.sleep(0.5)
     else:
         print("⚠ Server did not start in time")

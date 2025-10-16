@@ -109,26 +109,26 @@ class ParlantAgent:
 
     async def send_message(self, message: str) -> str:
         """Send a message through Parlant framework."""
-        # Create new session if needed
-        if not self.session_id:
-            try:
-                session = await self.client.sessions.create(
-                    agent_id=self.agent_id,
-                    allow_greeting=False,
-                )
-                self.session_id = session.id
-            except Exception as e:
-                import traceback
-                print(f"Warning: Failed to create Parlant session: {e}")
-                print(f"Full error details:")
-                traceback.print_exc()
-                print(f"Agent ID being used: {self.agent_id}")
-                return "[Error creating session]"
+        # Create a fresh session for each message to avoid multi-turn conversation bugs
+        # in Parlant engine (workaround for KeyError in journey path processing)
+        try:
+            session = await self.client.sessions.create(
+                agent_id=self.agent_id,
+                allow_greeting=False,
+            )
+            session_id = session.id
+        except Exception as e:
+            import traceback
+            print(f"Warning: Failed to create Parlant session: {e}")
+            print(f"Full error details:")
+            traceback.print_exc()
+            print(f"Agent ID being used: {self.agent_id}")
+            return "[Error creating session]"
 
         try:
             # Send customer message
             event = await self.client.sessions.create_event(
-                session_id=self.session_id,
+                session_id=session_id,
                 kind="message",
                 source="customer",
                 message=message,
@@ -136,7 +136,7 @@ class ParlantAgent:
 
             # Wait for AI agent response
             agent_messages = await self.client.sessions.list_events(
-                session_id=self.session_id,
+                session_id=session_id,
                 min_offset=event.offset,
                 source="ai_agent",
                 kinds="message",
@@ -146,7 +146,7 @@ class ParlantAgent:
             # Also get all events to see guidelines and tool calls
             try:
                 all_events = await self.client.sessions.list_events(
-                    session_id=self.session_id,
+                    session_id=session_id,
                     min_offset=event.offset,
                 )
 
@@ -443,22 +443,6 @@ class ComparisonRunner:
             print(f"Warning: Prompt file not found: {prompt_file}")
             return
 
-        # Create traditional agent with LLM client
-        traditional_agent = PromptBasedAgent(prompt_file, self.llm_client)
-
-        # Create Parlant agent if we have the client
-        agent_id = self.parlant_agents.get(agent_type)
-        if agent_id and self.parlant_client:
-            parlant_agent = ParlantAgent(agent_id, self.parlant_client)
-        else:
-            # Fallback: create a dummy agent that returns simulation messages
-            class SimulationAgent:
-                async def send_message(self, message: str) -> str:
-                    return "[Simulated Parlant response with guideline-based behavior control]"
-                async def close(self):
-                    pass
-            parlant_agent = SimulationAgent()
-
         # Get test cases
         test_cases = get_test_cases(agent_type)
 
@@ -469,12 +453,29 @@ class ComparisonRunner:
         agent_results = []
 
         for test_case in test_cases:
+            # Create fresh traditional agent for each test case
+            traditional_agent = PromptBasedAgent(prompt_file, self.llm_client)
+
+            # Create fresh Parlant agent for each test case to avoid multi-turn conversation bugs
+            agent_id = self.parlant_agents.get(agent_type)
+            if agent_id and self.parlant_client:
+                parlant_agent = ParlantAgent(agent_id, self.parlant_client)
+            else:
+                # Fallback: create a dummy agent that returns simulation messages
+                class SimulationAgent:
+                    async def send_message(self, message: str) -> str:
+                        return "[Simulated Parlant response with guideline-based behavior control]"
+                    async def close(self):
+                        pass
+                parlant_agent = SimulationAgent()
+
+            # Run the test case
             result = await self.run_test_case(test_case, traditional_agent, parlant_agent)
             agent_results.append(result)
             self.results.append(result)
 
-        # Close Parlant agent client
-        await parlant_agent.close()
+            # Close Parlant agent after each test case
+            await parlant_agent.close()
 
         # Save agent-specific results
         agent_output_file = self.output_dir / f"{agent_type}_comparison.json"

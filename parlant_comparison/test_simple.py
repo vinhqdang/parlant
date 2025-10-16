@@ -34,16 +34,38 @@ async def main():
     # Start server in background
     server_task = asyncio.create_task(run_server())
 
-    # Wait a bit for server to start
-    await asyncio.sleep(5)
-
     # Connect with client
     print("Connecting client...")
     client = Client(base_url=f"http://localhost:{port}")
 
+    # Wait for server to be ready by polling (like SDK tests do)
+    print("Waiting for server to be ready...")
+    for attempt in range(30):
+        # Check if server task failed
+        if server_task.done():
+            try:
+                server_task.result()
+            except Exception as e:
+                print(f"⚠ Server task failed: {e}")
+                import traceback
+                traceback.print_exc()
+                return
+
+        try:
+            agents = await client.agents.list()
+            print(f"✓ Server ready after {attempt+1} attempts")
+            break
+        except Exception as e:
+            if attempt % 5 == 0:
+                print(f"  Attempt {attempt+1}/30: {type(e).__name__}")
+            await asyncio.sleep(0.5)
+    else:
+        print("⚠ Server did not start in time")
+        server_task.cancel()
+        return
+
     # List agents
-    print("Listing agents...")
-    agents = await client.agents.list()
+    print(f"Listing agents (found {len(agents)})...")
     print(f"✓ Found {len(agents)} agent(s)")
 
     if agents:

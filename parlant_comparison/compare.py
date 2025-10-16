@@ -280,6 +280,16 @@ class ComparisonRunner:
             print("Waiting for Parlant server to be ready (this may take 1-2 minutes for initial embedding cache)...")
 
             for attempt in range(150):  # 150 attempts * 1 second = 150 seconds timeout
+                # Check if server task has failed
+                if self.parlant_server_task.done():
+                    try:
+                        self.parlant_server_task.result()
+                    except Exception as e:
+                        print(f"⚠ Server task failed with error: {e}")
+                        import traceback
+                        traceback.print_exc()
+                        return
+
                 try:
                     agents = await self.parlant_client.agents.list()
                     # Wait until we have all 5 agents created
@@ -307,14 +317,17 @@ class ComparisonRunner:
                         print(f"✓ Mapped {len(self.parlant_agents)} agent IDs")
                         break
                 except Exception as e:
-                    pass
+                    if attempt % 15 == 0:
+                        print(f"  Client connection attempt failed: {e}")
 
                 if attempt == 0 or attempt % 15 == 0:
                     print(f"  Still waiting for agents (attempt {attempt+1}/150)...")
+                    print(f"  Server task status: {'Done' if self.parlant_server_task.done() else 'Running'}")
                 await asyncio.sleep(1)
             else:
                 print("⚠ Parlant server did not start in time after 150 seconds")
-                self.parlant_server_task.cancel()
+                if self.parlant_server_task and not self.parlant_server_task.done():
+                    self.parlant_server_task.cancel()
                 return
 
         except Exception as e:

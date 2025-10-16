@@ -121,37 +121,76 @@ async def run_comparison():
     # Start Parlant server
     port = 8800
     print(f"✓ Starting Parlant server on port {port}...")
+    print("  (This may take 20-30 seconds for embedding cache initialization...)")
 
     server = p.Server(port=port, log_level=p.LogLevel.WARNING)
+    parlant_agent = None
 
     async def start_server():
+        nonlocal parlant_agent
         async with server:
+            # Give server time to bind to port and start HTTP API
+            await asyncio.sleep(5)
+            print("✓ Server context ready, creating agent...")
+            parlant_agent = await create_customer_service_agent(server)
+            print(f"✓ Parlant agent created: {parlant_agent.name}")
+            # Give extra time for embedding cache to complete
+            print("  Waiting for embedding cache to complete...")
+            await asyncio.sleep(10)
+            print("  Agent initialization complete, HTTP API should be ready")
             # Wait forever
             await asyncio.Future()
 
     server_task = asyncio.create_task(start_server())
 
-    # Wait for server to start
+    # Wait for server to start and agent to be created
     client = Client(base_url=f"http://localhost:{port}")
-    for _ in range(30):
+    max_wait = 90  # Increased to 90 seconds for embedding cache
+    print(f"  Waiting up to {max_wait} seconds for server and agent initialization...")
+
+    # First, wait for server to be reachable
+    server_ready = False
+    last_error = None
+    for i in range(60):  # 30 seconds for server startup
         try:
             await client.agents.list()
-            print("✓ Parlant server ready")
+            server_ready = True
+            print("  Server is responding, waiting for agent creation...")
             break
-        except Exception:
-            await asyncio.sleep(0.5)
+        except Exception as e:
+            last_error = str(e)
+            if i % 10 == 0 and i > 0:  # Print progress every 5 seconds
+                print(f"  Still waiting for server... ({i//2}s elapsed, last error: {type(e).__name__})")
+        await asyncio.sleep(0.5)
+
+    if not server_ready:
+        print("ERROR: Parlant server HTTP API did not become available")
+        print(f"  Last error: {last_error}")
+        print("  Server task status:", "done" if server_task.done() else "running")
+        if server_task.done() and server_task.exception():
+            print(f"  Server task exception: {server_task.exception()}")
+        server_task.cancel()
+        return
+
+    # Then wait for agent to be created and registered
+    for i in range(max_wait * 2):  # Check every 0.5 seconds
+        if parlant_agent is not None:
+            try:
+                agents = await client.agents.list()
+                if any(a.id == parlant_agent.id for a in agents):
+                    print("✓ Parlant server ready and agent registered")
+                    break
+            except Exception as e:
+                pass
+        await asyncio.sleep(0.5)
     else:
-        print("ERROR: Parlant server did not start in time")
+        print(f"ERROR: Agent did not initialize in time (parlant_agent={'set' if parlant_agent else 'not set'})")
         server_task.cancel()
         return
 
     try:
-        # Create Parlant agent
-        print("✓ Creating Parlant customer service agent...")
-        async with p.Server(port=port) as setup_server:
-            parlant_agent = await create_customer_service_agent(setup_server)
-
-        print(f"✓ Parlant agent created: {parlant_agent.name}")
+        # Agent is already created above in the server context
+        print(f"✓ Using agent: {parlant_agent.name}")
 
         # Load traditional prompt
         prompt_file = Path(__file__).parent / "prompts" / "customer_service_prompt.txt"

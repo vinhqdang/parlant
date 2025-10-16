@@ -109,46 +109,59 @@ class ParlantAgent:
 
     async def send_message(self, message: str) -> str:
         """Send a message through Parlant framework."""
-        # Create a fresh session for each message to avoid multi-turn conversation bugs
-        # in Parlant engine (workaround for KeyError in journey path processing)
-        try:
-            session = await self.client.sessions.create(
-                agent_id=self.agent_id,
-                allow_greeting=False,
-            )
-            session_id = session.id
-        except Exception as e:
-            import traceback
-            print(f"Warning: Failed to create Parlant session: {e}")
-            print(f"Full error details:")
-            traceback.print_exc()
-            print(f"Agent ID being used: {self.agent_id}")
-            return "[Error creating session]"
+        # Create session on first message, reuse for subsequent messages
+        if self.session_id is None:
+            try:
+                session = await self.client.sessions.create(
+                    agent_id=self.agent_id,
+                    allow_greeting=False,
+                )
+                self.session_id = session.id
+                print(f"  Created session: {self.session_id}")
+            except Exception as e:
+                import traceback
+                print(f"Warning: Failed to create Parlant session: {e}")
+                print(f"Full error details:")
+                traceback.print_exc()
+                print(f"Agent ID being used: {self.agent_id}")
+                return "[Error creating session]"
 
         try:
             # Send customer message
             event = await self.client.sessions.create_event(
-                session_id=session_id,
+                session_id=self.session_id,
                 kind="message",
                 source="customer",
                 message=message,
             )
 
-            # Wait for AI agent response
+            # Wait for AI agent response (increased timeout to reduce 504 errors)
             agent_messages = await self.client.sessions.list_events(
-                session_id=session_id,
+                session_id=self.session_id,
                 min_offset=event.offset,
                 source="ai_agent",
                 kinds="message",
-                wait_for_data=30,
+                wait_for_data=60,
             )
 
             # Also get all events to see guidelines and tool calls
             try:
                 all_events = await self.client.sessions.list_events(
-                    session_id=session_id,
+                    session_id=self.session_id,
                     min_offset=event.offset,
                 )
+
+                # Debug: print all event kinds to see what's happening
+                print(f"  DEBUG: Got {len(all_events)} events:")
+                for evt in all_events:
+                    evt_dict = evt.model_dump()
+                    evt_kind = evt_dict.get("kind", "")
+                    evt_source = evt_dict.get("source", "")
+                    print(f"    - Kind: {evt_kind}, Source: {evt_source}")
+                    # Show tool event details
+                    if evt_kind == "tool":
+                        evt_data = evt_dict.get("data", {})
+                        print(f"      Tool data: {list(evt_data.keys())}")
 
                 # Extract guidelines and tools from events
                 for evt in all_events:
@@ -162,12 +175,14 @@ class ParlantAgent:
                         if guideline_info not in self.guidelines_matched:
                             self.guidelines_matched.append(str(guideline_info))
 
-                    # Check for tool call events
-                    if "tool" in evt_kind.lower() or evt_kind == "action":
-                        tool_name = evt_data.get("tool_name") or evt_data.get("name") or evt_kind
+                    # Check for tool call events - "tool" kind indicates tool execution
+                    if evt_kind == "tool":
+                        # Try to get tool name from various possible fields
+                        tool_name = evt_data.get("tool_name") or evt_data.get("name") or evt_data.get("tool_id") or "tool_called"
                         if tool_name not in self.tools_called:
                             self.tools_called.append(str(tool_name))
-            except Exception:
+            except Exception as e:
+                print(f"  DEBUG: Error getting events: {e}")
                 # If we can't get metadata, just continue
                 pass
 
@@ -177,8 +192,16 @@ class ParlantAgent:
             return "[No response from agent]"
 
         except Exception as e:
-            print(f"Error sending message to Parlant: {e}")
-            return f"[Error: {str(e)}]"
+            error_msg = str(e)
+            print(f"Error sending message to Parlant: {error_msg}")
+
+            # If we hit the multi-turn KeyError bug, try recovering by creating new session
+            if "KeyError" in error_msg or "404" in error_msg or "504" in error_msg:
+                print(f"  Attempting to recover by creating new session...")
+                self.session_id = None  # Reset session so next call creates a new one
+                return f"[Error in conversation, will retry with new session: {error_msg}]"
+
+            return f"[Error: {error_msg}]"
 
     async def close(self):
         """Close resources - no-op for client API."""
@@ -249,10 +272,22 @@ class ComparisonRunner:
             # Create server instance (need tool_service_port for tools to work)
             import random
             tool_port = random.randint(9000, 9999)
+
+            # Configure container to disable perceived performance policy
+            # This ensures guideline evaluation completes instead of being cancelled for quick responses
+            async def configure_container(container: p.Container) -> p.Container:
+                from parlant.core.engines.alpha.perceived_performance_policy import (
+                    NullPerceivedPerformancePolicy,
+                    PerceivedPerformancePolicy,
+                )
+                container[PerceivedPerformancePolicy] = NullPerceivedPerformancePolicy()
+                return container
+
             server = p.Server(
                 port=self.parlant_port,
                 tool_service_port=tool_port,
-                log_level=p.LogLevel.WARNING
+                log_level=p.LogLevel.WARNING,
+                configure_container=configure_container,
             )
 
             # Define the server task that creates agents then starts HTTP server

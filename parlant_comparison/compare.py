@@ -253,6 +253,23 @@ class ComparisonRunner:
                     # Wait until we have all 5 agents created
                     if len(agents) >= 5:
                         print(f"✓ Parlant server ready with {len(agents)} agents after {attempt+1} seconds")
+
+                        # Map agent names to IDs by querying from client
+                        # This ensures we have the correct IDs even if async task hasn't fully populated the dict
+                        agent_name_mapping = {
+                            "Premier Customer Service Representative": "customer_service",
+                            "Premier Loan Officer": "loan_officer",
+                            "Premier Investment Advisor": "investment_advisor",
+                            "Premier Technical Support": "technical_support",
+                            "Premier Developer Support": "developer_support",
+                        }
+
+                        for agent in agents:
+                            mapped_name = agent_name_mapping.get(agent.name)
+                            if mapped_name:
+                                self.parlant_agents[mapped_name] = agent.id
+
+                        print(f"✓ Mapped {len(self.parlant_agents)} agent IDs")
                         break
                 except Exception as e:
                     pass

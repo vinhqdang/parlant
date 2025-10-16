@@ -116,7 +116,11 @@ class ParlantAgent:
                 )
                 self.session_id = session.id
             except Exception as e:
+                import traceback
                 print(f"Warning: Failed to create Parlant session: {e}")
+                print(f"Full error details:")
+                traceback.print_exc()
+                print(f"Agent ID being used: {self.agent_id}")
                 return "[Error creating session]"
 
         try:
@@ -268,6 +272,9 @@ class ComparisonRunner:
                             mapped_name = agent_name_mapping.get(agent.name)
                             if mapped_name:
                                 self.parlant_agents[mapped_name] = agent.id
+                                print(f"  - Mapped '{agent.name}' -> {mapped_name} (ID: {agent.id})")
+                            else:
+                                print(f"  - Skipped unmapped agent: '{agent.name}'")
 
                         print(f"✓ Mapped {len(self.parlant_agents)} agent IDs")
                         break
